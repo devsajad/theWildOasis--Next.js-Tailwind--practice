@@ -60,3 +60,6 @@
   --rdp-background-color: var(--color-accent-600) !important;
   margin: 0 !important;
 }
+.rdp-months {
+  justify-content: center;
+}

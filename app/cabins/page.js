@@ -1,11 +1,17 @@
-export const metadata = {
-  title: "Cabins",
-};
 import { Suspense } from "react";
 import Spinner from "@/starter/components/Spinner";
 import CabinList from "../_components/CabinList";
+import ReservationReminder from "../_components/ReservationReminder";
 
-export default async function Page() {
+// export const revalidate = 3600;
+
+export const metadata = {
+  title: "Cabins",
+};
+
+export default async function Page({ searchParams }) {
+  const filter = (await searchParams).capacity ?? "all";
+
   return (
     <div>
       <h1 className="text-accent-400 mb-5 text-4xl font-medium">
@@ -20,8 +26,9 @@ export default async function Page() {
         Welcome to paradise.
       </p>
 
-      <Suspense fallback={<Spinner />}>
-        <CabinList />
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );

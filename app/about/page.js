@@ -1,36 +1,39 @@
-"use client";
-
 import Image from "next/image";
 import img1 from "@/public/about-1.jpg";
 import img2 from "@/public/about-2.jpg";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { getCabins } from "../_lib/data-service";
+// import { useEffect, useState } from "react";
 
-// export const metadata = {
-//   title: "About",
-// };
+export const revalidate = 24 * 60 * 60;
 
-export default function Page() {
-  const [test, setTest] = useState(null);
-  const [counter, setCounter] = useState(1);
+export const metadata = {
+  title: "About",
+};
 
-  useEffect(() => {
-    console.log(test);
-    console.log(document.documentElement);
-  }, [test]);
+export default async function Page() {
+  const cabinCoutnt = (await getCabins()).length;
 
-  function testFunc() {
-    setTest(counter);
-    setCounter((c) => c + 1);
-    console.log("test Changed");
-  }
+  // const [test, setTest] = useState(null);
+  // const [counter, setCounter] = useState(1);
+
+  // useEffect(() => {
+  //   console.log(test);
+  //   console.log(document.documentElement);
+  // }, [test]);
+
+  // function testFunc() {
+  //   setTest(counter);
+  //   setCounter((c) => c + 1);
+  //   console.log("test Changed");
+  // }
 
   return (
-    <div className="grid grid-cols-5 gap-x-24 gap-y-32 text-lg items-center">
+    <div className="grid grid-cols-5 items-center gap-x-24 gap-y-32 text-lg">
       <div className="col-span-3">
         <h1
-          className="text-4xl mb-10 text-accent-400 font-medium"
-          onClick={() => testFunc()}
+          className="text-accent-400 mb-10 text-4xl font-medium"
+          // onClick={() => testFunc()}
         >
           Welcome to The Wild Oasis
         </h1>
@@ -44,10 +47,10 @@ export default function Page() {
             and enjoying simple pleasures with family.
           </p>
           <p>
-            Our 8 luxury cabins provide a cozy base, but the real freedom and
-            peace you&apos;ll find in the surrounding mountains. Wander through
-            lush forests, breathe in the fresh air, and watch the stars twinkle
-            above from the warmth of a campfire or your hot tub.
+            Our {cabinCoutnt} luxury cabins provide a cozy base, but the real
+            freedom and peace you&apos;ll find in the surrounding mountains.
+            Wander through lush forests, breathe in the fresh air, and watch the
+            stars twinkle above from the warmth of a campfire or your hot tub.
           </p>
           <p>
             This is where memorable moments are made, surrounded by
@@ -57,7 +60,7 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="col-span-2 relative aspect-square">
+      <div className="relative col-span-2 aspect-square">
         <Image
           quality={80}
           className="object-cover"
@@ -77,7 +80,7 @@ export default function Page() {
       </div>
 
       <div className="col-span-3">
-        <h1 className="text-4xl mb-10 text-accent-400 font-medium">
+        <h1 className="text-accent-400 mb-10 text-4xl font-medium">
           Managed by our family since 1962
         </h1>
 
@@ -100,7 +103,7 @@ export default function Page() {
           <div>
             <Link
               href="/cabins"
-              className="inline-block mt-4 bg-accent-500 px-8 py-5 text-primary-800 text-lg font-semibold hover:bg-accent-600 transition-all"
+              className="bg-accent-500 text-primary-800 hover:bg-accent-600 mt-4 inline-block px-8 py-5 text-lg font-semibold transition-all"
             >
               Explore our luxury cabins
             </Link>
