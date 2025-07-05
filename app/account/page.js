@@ -1,11 +1,15 @@
+import { auth } from "../_lib/auth";
+
 export const metadata = {
   title: "Accounts",
 };
 
-function app() {
+async function app() {
+  const session = await auth();
+
   return (
-    <h2 className="font-semibold text-2xl text-accent-400 mb-7">
-      Welcome Jonas
+    <h2 className="text-accent-400 mb-7 text-2xl font-semibold">
+      Welcome {session.user.name}
     </h2>
   );
 }
