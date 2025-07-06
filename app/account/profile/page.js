@@ -1,9 +1,14 @@
 import SelectCountry from "@/app/_components/SelectCountry";
 import UserUpdateProfileForm from "@/app/_components/UserUpdateProfileForm";
-import Image from "next/image";
+import { auth } from "@/app/_lib/auth";
+import { getGuest } from "@/app/_lib/data-service";
 
-export default function Page() {
-  const nationality = "/portugal";
+export default async function Page() {
+  const {
+    user: { email },
+  } = await auth();
+
+  const guest = await getGuest(email);
 
   return (
     <div>
@@ -16,13 +21,13 @@ export default function Page() {
         faster and smoother. See you soon!
       </p>
 
-      <UserUpdateProfileForm>
-        <SelectCountry
+      <UserUpdateProfileForm guest={guest}>
+        {/* <SelectCountry
           name="nationality"
           id="nationality"
           className="bg-primary-200 text-primary-800 w-full rounded-sm px-5 py-3 shadow-sm"
-          defaultCountry={nationality}
-        />
+          defaultCountry={guest.nationality}
+        /> */}
       </UserUpdateProfileForm>
     </div>
   );

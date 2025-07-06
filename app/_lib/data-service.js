@@ -143,7 +143,8 @@ export async function getCountries() {
     );
     const countries = await res.json();
     return countries;
-  } catch {
+  } catch (error) {
+    console.log(error);
     throw new Error("Could not fetch countries");
   }
 }
