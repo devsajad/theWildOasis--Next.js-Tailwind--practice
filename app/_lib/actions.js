@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { updateGuest } from "./data-service";
+import { deleteBooking, getBookings, updateGuest } from "./data-service";
 
 const { signIn, signOut, auth } = require("./auth");
 
@@ -37,4 +37,20 @@ export async function updateProfile(formData) {
   revalidatePath("/account/profile");
 
   await updateGuest(session.user.guestId, updatedFields);
+}
+
+export async function deleteBookingAction(bookingId) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+
+  // Check user own the booking that wants to delete
+  const userBookings = await getBookings(session.user.guestId);
+  const isUserOwnId = userBookings.some((booking) => booking.id === bookingId);
+
+  if (!isUserOwnId)
+    throw new Error("You are not allowed to delete this reservation");
+
+  await deleteBooking(bookingId);
+
+  revalidatePath("/account/reservations");
 }
