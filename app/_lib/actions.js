@@ -50,7 +50,7 @@ export async function deleteBookingAction(bookingId) {
   if (!isUserOwnId)
     throw new Error("You are not allowed to delete this reservation");
 
-  await deleteBooking(bookingId);
+  // await deleteBooking(bookingId);
 
-  revalidatePath("/account/reservations");
+  // revalidatePath("/account/reservations");
 }
