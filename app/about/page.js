@@ -5,8 +5,6 @@ import Link from "next/link";
 import { getCabins } from "../_lib/data-service";
 // import { useEffect, useState } from "react";
 
-export const revalidate = 24 * 60 * 60;
-
 export const metadata = {
   title: "About",
 };
