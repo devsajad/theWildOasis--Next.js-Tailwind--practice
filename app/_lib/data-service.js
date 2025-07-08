@@ -1,5 +1,6 @@
 import { eachDayOfInterval } from "date-fns";
 import supabase from "./supabase";
+import { notFound } from "next/navigation";
 /////////////
 // GET
 
@@ -12,6 +13,7 @@ export async function getCabin(id) {
 
   // For testing
   // await new Promise((res) => setTimeout(res, 5000));
+  if (!data) return notFound();
 
   if (error) {
     console.error(error);
@@ -164,19 +166,17 @@ export async function createGuest(newGuest) {
 }
 
 export async function createBooking(newBooking) {
-  const { data, error } = await supabase
-    .from("bookings")
-    .insert([newBooking])
-    // So that the newly created object gets returned!
-    .select()
-    .single();
+  const { data, error } = await supabase.from("bookings").insert([newBooking]);
+  // // So that the newly created object gets returned!
+  // .select()
+  // .single();
 
   if (error) {
     console.error(error);
     throw new Error("Booking could not be created");
   }
 
-  return data;
+  // return data;
 }
 
 /////////////
@@ -224,4 +224,19 @@ export async function deleteBooking(id) {
     throw new Error("Booking could not be deleted");
   }
   return data;
+}
+
+export async function getCabinByBookingId(bookingId) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("id, cabin: cabins(*)") // rename: cabin
+    .eq("id", bookingId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Could not fetch booking");
+  }
+
+  return data.cabin;
 }

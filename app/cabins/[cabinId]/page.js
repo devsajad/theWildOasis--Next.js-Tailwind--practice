@@ -1,16 +1,10 @@
 import CabinDetails from "@/app/_components/CabinDetails";
 import CabinImage from "@/app/_components/CabinImage";
-// import SkeletonCard from "@/app/_components/SkeletonCard";
-import { getCabin, getCabins } from "@/app/_lib/data-service";
-// import Spinner from "@/starter/components/Spinner";
-// import SpinnerMini from "@/starter/components/SpinnerMini";
 import Reservation from "@/app/_components/Reservation";
-import Spinner from "@/starter/components/Spinner";
+import Spinner from "@/app/_components/Spinner";
+import { getCabin, getCabins } from "@/app/_lib/data-service";
 import { EyeSlashIcon, MapPinIcon } from "@heroicons/react/24/solid";
 import { Suspense } from "react";
-// import Image from "next/image";
-// import { Suspense } from "react";
-
 // Make This page Static by defining all possible params :
 
 export async function generateStaticParams() {

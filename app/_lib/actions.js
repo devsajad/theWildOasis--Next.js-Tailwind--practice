@@ -1,7 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { deleteBooking, getBookings, updateGuest } from "./data-service";
+import {
+  createBooking,
+  deleteBooking,
+  getBookings,
+  updateBooking,
+  updateGuest,
+} from "./data-service";
+import { redirect } from "next/navigation";
 
 const { signIn, signOut, auth } = require("./auth");
 
@@ -45,12 +52,62 @@ export async function deleteBookingAction(bookingId) {
 
   // Check user own the booking that wants to delete
   const userBookings = await getBookings(session.user.guestId);
-  const isUserOwnId = userBookings.some((booking) => booking.id === bookingId);
+  const isUserOwnId = userBookings.some((booking) => booking.id === +bookingId);
 
   if (!isUserOwnId)
     throw new Error("You are not allowed to delete this reservation");
 
-  // await deleteBooking(bookingId);
+  await deleteBooking(bookingId);
 
-  // revalidatePath("/account/reservations");
+  revalidatePath("/account/reservations");
+}
+
+export async function updateReservationAction(formData) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+
+  // Get form bookingId
+  const bookingId = Number(formData.get("bookingId"));
+  const numGuests = formData.get("numGuests");
+  const observations = formData.get("observations");
+
+  // Data Validation
+
+  // Check user own the booking that wants to edit
+  const userBookings = await getBookings(session.user.guestId);
+  const isUserOwnId = userBookings.some((booking) => booking.id === bookingId);
+
+  if (!isUserOwnId)
+    throw new Error("You are not allowed to edit this reservation");
+
+  // Update booking
+  updateBooking(bookingId, {
+    numGuests,
+    observations,
+  });
+
+  redirect("/account/reservations");
+}
+
+export async function createBookingAction(bookingData, formData) {
+  // Authentication
+  const session = await auth();
+  if (!session)
+    throw new Error("Sorry you can't access , you should login first");
+
+  const data = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations").slice(0, 100),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: "unconfirmed",
+  };
+
+  await createBooking(data);
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
 }

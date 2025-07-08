@@ -1,7 +1,10 @@
+import Spinner from "./_components/Spinner";
+
 function loading() {
   return (
-    <div>
-      <p>Loading ...</p>
+    <div className="flex flex-col items-center justify-center">
+      <Spinner />
+      <p>Loading ....</p>
     </div>
   );
 }

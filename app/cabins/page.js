@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import Spinner from "@/starter/components/Spinner";
 import CabinList from "../_components/CabinList";
 import ReservationReminder from "../_components/ReservationReminder";
+import Spinner from "../_components/Spinner";
 
 // export const revalidate = 3600;
 

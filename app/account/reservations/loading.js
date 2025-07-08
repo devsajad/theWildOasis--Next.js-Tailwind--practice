@@ -1,10 +1,10 @@
-import Spinner from "../_components/Spinner";
+import Spinner from "@/app/_components/Spinner";
 
 function loading() {
   return (
     <div className="flex flex-col items-center justify-center">
       <Spinner />
-      <p>Cabins Loading ....</p>
+      <p>Loading ....</p>
     </div>
   );
 }

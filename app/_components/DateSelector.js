@@ -1,6 +1,6 @@
 "use client";
 
-import { isWithinInterval } from "date-fns";
+import { differenceInDays, isEqual, isPast, isWithinInterval } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { useReservation } from "../_context/ReservationContext";
@@ -15,17 +15,15 @@ function isAlreadyBooked(range, datesArr) {
   );
 }
 
-function DateSelector({ cabin, settings, bookedDate }) {
+function DateSelector({ cabin, settings, bookedDates }) {
   const { range, setRange, resetRange } = useReservation();
-
-  // CHANGE
-  const regularPrice = cabin.regularPrice;
-  const discount = cabin.discount;
-  const cabinPrice = regularPrice - discount;
-  const numNights = 23;
-
   // SETTINGS
   const { minBookLength, maxBookLength } = settings;
+  // Cabins
+  const { regularPrice, discount } = cabin;
+  const numNights = differenceInDays(range.to, range.from);
+  const cabinPrice = numNights * regularPrice;
+
 
   return (
     <div className="flex flex-col justify-between">
@@ -42,7 +40,11 @@ function DateSelector({ cabin, settings, bookedDate }) {
         }
         endMonth={new Date(new Date().getFullYear() + 5, 0)}
         captionLayout="dropdown"
-        numberOfMonths={2}
+        numberOfMonths={1}
+        disabled={(currentDates) =>
+          isPast(currentDates) ||
+          bookedDates.some((date) => isEqual(date, currentDates))
+        }
       />
 
       <div className="bg-accent-500 text-primary-800 flex h-[72px] items-center justify-between px-8">
@@ -66,7 +68,7 @@ function DateSelector({ cabin, settings, bookedDate }) {
                 <span>&times;</span> <span>{numNights}</span>
               </p>
               <p>
-                <span className="text-lg font-bold uppercase">Total</span>{" "}
+                <span className="text-lg font-bold uppercase">Total</span>
                 <span className="text-2xl font-semibold">${cabinPrice}</span>
               </p>
             </>

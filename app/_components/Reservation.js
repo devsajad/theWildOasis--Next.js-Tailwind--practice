@@ -9,7 +9,7 @@ import LoginMessage from "./LoginMessage";
 import ReservationForm from "./ReservationForm";
 
 async function Reservation({ cabinId }) {
-  const [cabin, settings, bookedDate] = await Promise.all([
+  const [cabin, settings, bookedDates] = await Promise.all([
     getCabin(cabinId),
     getSettings(),
     getBookedDatesByCabinId(cabinId),
@@ -19,7 +19,7 @@ async function Reservation({ cabinId }) {
 
   return (
     <div className="border-primary-800 grid min-h-[400px] grid-cols-2 items-center border">
-      <DateSelector cabin={cabin} settings={settings} bookedDate={bookedDate} />
+      <DateSelector cabin={cabin} settings={settings} bookedDates={bookedDates} />
       {session?.user ? (
         <ReservationForm cabin={cabin} user={session.user} />
       ) : (

@@ -1,19 +1,40 @@
 "use client";
 
+import Image from "next/image";
 import { useReservation } from "../_context/ReservationContext";
+import { differenceInDays } from "date-fns";
+import { createBookingAction } from "../_lib/actions";
 
 function ReservationForm({ cabin, user }) {
   // CHANGE
-  const maxCapacity = cabin.maxCapacity;
+  const { range, resetRange } = useReservation();
+  const { maxCapacity, regularPrice, discount, id: cabinId } = cabin;
+
+  const startDate = range.from;
+  const endDate = range.to;
+  const numNights = differenceInDays(endDate, startDate);
+
+  const cabinPrice = numNights * (regularPrice - discount);
+
+  const bookingData = {
+    startDate,
+    endDate,
+    numNights,
+    cabinPrice,
+    cabinId,
+  };
+
   return (
     <div className="scale-[1.01]">
       <div className="bg-primary-800 text-primary-300 flex items-center justify-between px-16 py-2">
         <p>Logged in as {user.name}</p>
         <div className="flex items-center gap-4">
-          <img
+          <Image
+            width={32}
+            height={32}
             // Important to display google profile images
             referrerPolicy="no-referrer"
-            className="h-8 rounded-full"
+            className="rounded-full"
             src={user.image}
             alt={user.name}
           />
@@ -21,7 +42,13 @@ function ReservationForm({ cabin, user }) {
         </div>
       </div>
 
-      <form className="bg-primary-900 flex flex-col gap-5 px-16 py-10 text-lg">
+      <form
+        className="bg-primary-900 flex flex-col gap-5 px-16 py-10 text-lg"
+        action={async (formData) => {
+          await createBookingAction(bookingData, formData);
+          resetRange();
+        }}
+      >
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select
